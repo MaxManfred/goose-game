@@ -46,9 +46,8 @@ public class Main {
             try {
                 commandParser.parseCommand(currentCommand);
             } catch (CommandParserException | GameStatusException e) {
+//                display an error message and continue
                 System.out.println(e.getMessage());
-
-//                throw new GooseGameException(e.getMessage());
             }
 
             System.out.print(messageProvider.getMessage("main.prompt"));
