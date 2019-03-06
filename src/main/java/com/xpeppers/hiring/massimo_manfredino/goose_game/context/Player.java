@@ -1,4 +1,4 @@
-package com.xpeppers.hiring.massimo_manfredino.goose_game;
+package com.xpeppers.hiring.massimo_manfredino.goose_game.context;
 
 /**
  * A goose game player.

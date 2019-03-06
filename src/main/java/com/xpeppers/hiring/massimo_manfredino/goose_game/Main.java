@@ -1,7 +1,9 @@
 package com.xpeppers.hiring.massimo_manfredino.goose_game;
 
+import com.xpeppers.hiring.massimo_manfredino.goose_game.command.CommandParser;
 import com.xpeppers.hiring.massimo_manfredino.goose_game.exception.CommandParserException;
 import com.xpeppers.hiring.massimo_manfredino.goose_game.exception.GooseGameException;
+import com.xpeppers.hiring.massimo_manfredino.goose_game.exception.MessageProviderClientException;
 import com.xpeppers.hiring.massimo_manfredino.goose_game.exception.MessageProviderException;
 import com.xpeppers.hiring.massimo_manfredino.goose_game.message.MessageProvider;
 
@@ -25,8 +27,8 @@ public class Main {
 
 //        get command parser
         try {
-            commandParser = new CommandParser();
-        } catch (CommandParserException e) {
+            commandParser = CommandParser.getInstance();
+        } catch (MessageProviderClientException e) {
             throw new GooseGameException(String.format("Unable to create command parser: %s", e.getMessage()));
         }
 
@@ -39,12 +41,10 @@ public class Main {
         System.out.print(messageProvider.getMessage("main.prompt"));
 
 //        create a scanner object to read input
-        scanner = new Scanner(System.in).useDelimiter("\\s");;
+        scanner = new Scanner(System.in);
 
         String currentCommand;
         while (!messageProvider.getMessage("command.quit").equals(currentCommand = scanner.nextLine())) {
-
-
 //            process current command
             try {
                 commandParser.parseCommand(currentCommand);
