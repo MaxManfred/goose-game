@@ -1,6 +1,6 @@
 package com.xpeppers.hiring.massimo_manfredino.goose_game.command;
 
-import com.xpeppers.hiring.massimo_manfredino.goose_game.context.GameStatus;
+import com.xpeppers.hiring.massimo_manfredino.goose_game.match.Match;
 import com.xpeppers.hiring.massimo_manfredino.goose_game.exception.CommandParserException;
 import com.xpeppers.hiring.massimo_manfredino.goose_game.exception.GameStatusException;
 import com.xpeppers.hiring.massimo_manfredino.goose_game.exception.MessageProviderClientException;
@@ -11,11 +11,11 @@ public class CommandParser extends MessageProviderClient {
 
     private static CommandParser instance;
 
-    private static GameStatus gameStatus;
+    private static Match match;
 
     private CommandParser() throws MessageProviderClientException {
         super();
-        gameStatus = GameStatus.getInstance();
+        match = Match.getInstance();
     }
 
     public static CommandParser getInstance() throws MessageProviderClientException {
@@ -67,7 +67,7 @@ public class CommandParser extends MessageProviderClient {
                     getMessageProvider().getMessage("exception.game-status.invalid.player.name")
                 );
             } else {
-                gameStatus.addPlayer(tokens[2]);
+                match.addPlayer(tokens[2]);
             }
         } else {
             throw new CommandParserException(
