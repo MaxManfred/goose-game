@@ -21,7 +21,6 @@ public class MessageProvider {
     public static MessageProvider getInstance() throws MessageProviderException {
         if (instance == null) {
             instance = new MessageProvider();
-            instance.getClass().getClassLoader();
 
 //            load message bundle
             messageBundle = new Properties();

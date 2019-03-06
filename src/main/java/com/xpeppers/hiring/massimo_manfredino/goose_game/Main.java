@@ -1,10 +1,7 @@
 package com.xpeppers.hiring.massimo_manfredino.goose_game;
 
 import com.xpeppers.hiring.massimo_manfredino.goose_game.command.CommandParser;
-import com.xpeppers.hiring.massimo_manfredino.goose_game.exception.CommandParserException;
-import com.xpeppers.hiring.massimo_manfredino.goose_game.exception.GooseGameException;
-import com.xpeppers.hiring.massimo_manfredino.goose_game.exception.MessageProviderClientException;
-import com.xpeppers.hiring.massimo_manfredino.goose_game.exception.MessageProviderException;
+import com.xpeppers.hiring.massimo_manfredino.goose_game.exception.*;
 import com.xpeppers.hiring.massimo_manfredino.goose_game.message.MessageProvider;
 
 import java.util.Scanner;
@@ -48,8 +45,10 @@ public class Main {
 //            process current command
             try {
                 commandParser.parseCommand(currentCommand);
-            } catch (CommandParserException | MessageProviderException e) {
-                throw new GooseGameException(e.getMessage());
+            } catch (CommandParserException | GameStatusException e) {
+                System.out.println(e.getMessage());
+
+//                throw new GooseGameException(e.getMessage());
             }
 
             System.out.print(messageProvider.getMessage("main.prompt"));
