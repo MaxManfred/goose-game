@@ -27,13 +27,6 @@ public interface Cell {
      */
     CellType getCellType();
 
-//    /**
-//     * Sets the cell type (see @{@link CellType}).
-//     *
-//     * @param cellType the cell type
-//     */
-//    void setCellType(CellType cellType);
-
     /**
      * Returns the list of players standing on this cell.
      *

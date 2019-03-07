@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.xpeppers.hiring.massimo_manfredino.goose_game.display.DisplayUtils.getDisplayableIndex;
 import static java.util.stream.Collectors.toList;
 
 public class Match extends MessageProviderClient {
@@ -82,6 +83,13 @@ public class Match extends MessageProviderClient {
      * the user writes: "move Pippo 2, 3"
      * the system responds: "Pippo rolls 2, 3. Pippo moves from 6 to 11"
      *
+     * As a player, when I get to the space "The Bridge", I jump to the space "12"
+     * Get to "The Bridge"
+     * If there is one participant "Pippo" on space "4"
+     * assuming that the dice get 1 and 1
+     * when the user writes: "move Pippo"
+     * the system responds: "Pippo rolls 1, 1. Pippo moves from 4 to The Bridge. Pippo jumps to 12"
+     *
      * As a player, I win the game if I land on space "63"
      * 1. Victory
      * If there is one participant "Pippo" on space "60"
@@ -119,8 +127,25 @@ public class Match extends MessageProviderClient {
         int oldCellIndex = p.getCell().getIndex();
         int newCellIndex = oldCellIndex + dice1 + dice2;
 
-        if (newCellIndex > 63) {
-            board.getCell(63).addStandingPlayer(p);
+        if (newCellIndex == 6) {
+//            handle The Bridge
+//            display message
+            System.out.println(String.format(
+                "%s moves from %s to %s.",
+                name, getDisplayableIndex(oldCellIndex), getDisplayableIndex(newCellIndex)
+            ));
+
+//            then make him jump to 12
+            newCellIndex = 12;
+            System.out.println(String.format("%s jumps to %d.", name, newCellIndex));
+            board.getCell(newCellIndex).addStandingPlayer(p);
+        } else if (newCellIndex > 63) {
+//            handle bouncing
+//            display message
+            System.out.println(String.format(
+                "%s moves from %s to %s.",
+                name, getDisplayableIndex(oldCellIndex), 63
+            ));
 
 //            bounce back
             newCellIndex = 126 - newCellIndex;
@@ -129,6 +154,12 @@ public class Match extends MessageProviderClient {
 
             board.getCell(newCellIndex).addStandingPlayer(p);
         } else {
+//            display message
+            System.out.println(String.format(
+                "%s moves from %s to %s.",
+                name, getDisplayableIndex(oldCellIndex), getDisplayableIndex(newCellIndex)
+            ));
+
             board.getCell(newCellIndex).addStandingPlayer(p);
 
             if (newCellIndex == 63) {

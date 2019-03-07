@@ -7,6 +7,8 @@ import com.xpeppers.hiring.massimo_manfredino.goose_game.message.MessageProvider
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.xpeppers.hiring.massimo_manfredino.goose_game.display.DisplayUtils.getDisplayableIndex;
+
 public class RegularCell extends MessageProviderClient implements Cell {
 
     private int index;
@@ -58,16 +60,16 @@ public class RegularCell extends MessageProviderClient implements Cell {
             previousPlayerCell.getStandingPlayers().remove(0);
             player.setCell(null);
 
-//            display message
-            System.out.println(String.format(
-                "%s moves from %s to %s.",
-                player.getName(), getDisplayableIndex(previousPlayerCell.getIndex()), getDisplayableIndex(getIndex())
-            ));
+////            display message
+//            System.out.println(String.format(
+//                "%s moves from %s to %s.",
+//                player.getName(), getDisplayableIndex(previousPlayerCell.getIndex()), getDisplayableIndex(getIndex())
+//            ));
         }
 
 //        if prank is enabled, remove the player occupying this cell and send her back to the cell incoming user was before
         if (prankEnabled && !standingPlayers.isEmpty() && previousPlayerCell != null) {
-//            he is in trantit now
+//            he is in transit now
             Player removedPlayer = standingPlayers.remove(0);
             removedPlayer.setCell(null);
 
@@ -83,16 +85,5 @@ public class RegularCell extends MessageProviderClient implements Cell {
 //        put the incoming player to this cell
         standingPlayers.add(player);
         player.setCell(this);
-    }
-
-    private String getDisplayableIndex(int index) {
-        switch (index) {
-            case 0:
-                return "Start";
-            case 63:
-                return "End";
-            default:
-                return String.valueOf(index);
-        }
     }
 }
