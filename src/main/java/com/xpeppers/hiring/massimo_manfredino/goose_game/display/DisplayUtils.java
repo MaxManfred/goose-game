@@ -9,6 +9,13 @@ public class DisplayUtils {
             case 0:
                 result = "Start";
                 break;
+            case 5:
+            case 14:
+            case 18:
+            case 23:
+            case 27:
+                result = String.format("%d, The Goose", index);
+                break;
             case 6:
                 result = "The Bridge";
                 break;

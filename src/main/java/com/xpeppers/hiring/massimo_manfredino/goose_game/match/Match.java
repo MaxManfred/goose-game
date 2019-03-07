@@ -2,6 +2,7 @@ package com.xpeppers.hiring.massimo_manfredino.goose_game.match;
 
 import com.xpeppers.hiring.massimo_manfredino.goose_game.board.Board;
 import com.xpeppers.hiring.massimo_manfredino.goose_game.board.Cell;
+import com.xpeppers.hiring.massimo_manfredino.goose_game.board.CellType;
 import com.xpeppers.hiring.massimo_manfredino.goose_game.exception.MatchException;
 import com.xpeppers.hiring.massimo_manfredino.goose_game.exception.MessageProviderClientException;
 import com.xpeppers.hiring.massimo_manfredino.goose_game.message.MessageProviderClient;
@@ -90,6 +91,21 @@ public class Match extends MessageProviderClient {
      * when the user writes: "move Pippo"
      * the system responds: "Pippo rolls 1, 1. Pippo moves from 4 to The Bridge. Pippo jumps to 12"
      *
+     * As a player, when I get to a space with a picture of "The Goose", I move forward again by the sum of the two dice rolled before
+     * The spaces 5, 9, 14, 18, 23, 27 have a picture of "The Goose"
+     *
+     * Single Jump
+     * If there is one participant "Pippo" on space "3"
+     * assuming that the dice get 1 and 1
+     * when the user writes: "move Pippo"
+     * the system responds: "Pippo rolls 1, 1. Pippo moves from 3 to 5, The Goose. Pippo moves again and goes to 7"
+     *
+     * Multiple Jump
+     * If there is one participant "Pippo" on space "10"
+     * assuming that the dice get 2 and 2
+     * when the user writes: "move Pippo"
+     * the system responds: "Pippo rolls 2, 2. Pippo moves from 10 to 14, The Goose. Pippo moves again and goes to 18, The Goose. Pippo moves again and goes to 22"
+     *
      * As a player, I win the game if I land on space "63"
      * 1. Victory
      * If there is one participant "Pippo" on space "60"
@@ -127,30 +143,42 @@ public class Match extends MessageProviderClient {
         int oldCellIndex = p.getCell().getIndex();
         int newCellIndex = oldCellIndex + dice1 + dice2;
 
-        if (newCellIndex == 6) {
+        if (newCellIndex > 63) {
+//            handle bouncing
+//            display message
+            System.out.println(String.format("%s moves from %s to %s.", name, getDisplayableIndex(oldCellIndex), 63));
+
+//            bounce back
+            newCellIndex = 126 - newCellIndex;
+
+            System.out.println(String.format("%s bounces! %s returns to %d.", name, name, newCellIndex));
+
+            board.getCell(newCellIndex).addStandingPlayer(p);
+        } else if (newCellIndex == 6) {
 //            handle The Bridge
 //            display message
             System.out.println(String.format(
-                "%s moves from %s to %s.",
-                name, getDisplayableIndex(oldCellIndex), getDisplayableIndex(newCellIndex)
+                    "%s moves from %s to %s.",
+                    name, getDisplayableIndex(oldCellIndex), getDisplayableIndex(newCellIndex)
             ));
 
 //            then make him jump to 12
             newCellIndex = 12;
             System.out.println(String.format("%s jumps to %d.", name, newCellIndex));
             board.getCell(newCellIndex).addStandingPlayer(p);
-        } else if (newCellIndex > 63) {
-//            handle bouncing
-//            display message
+        } else if(board.getCell(newCellIndex).getCellType().equals(CellType.GOOSE_CELL)) {
+//            handle goose
             System.out.println(String.format(
                 "%s moves from %s to %s.",
-                name, getDisplayableIndex(oldCellIndex), 63
+                name, getDisplayableIndex(oldCellIndex), getDisplayableIndex(newCellIndex)
             ));
 
-//            bounce back
-            newCellIndex = 126 - newCellIndex;
-
-            System.out.println(String.format("%s bounces! %s returns to %d.", name, name, newCellIndex));
+            Cell nextCell = board.getCell(newCellIndex);
+            while(nextCell.getCellType().equals(CellType.GOOSE_CELL)) {
+                newCellIndex += dice1 + dice2;
+                nextCell = board.getCell(newCellIndex);
+                System.out.println(String.format("%s moves again and goes to %s.", name, getDisplayableIndex(newCellIndex)));
+            }
 
             board.getCell(newCellIndex).addStandingPlayer(p);
         } else {
@@ -163,7 +191,7 @@ public class Match extends MessageProviderClient {
             board.getCell(newCellIndex).addStandingPlayer(p);
 
             if (newCellIndex == 63) {
-//                victory
+//                handle victory
                 System.out.println(String.format("%s wins!!", name));
 
 //                say goodbye to user
