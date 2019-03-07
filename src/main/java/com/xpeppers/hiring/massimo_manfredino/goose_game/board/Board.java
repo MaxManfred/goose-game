@@ -31,37 +31,20 @@ public class Board extends MessageProviderClient {
 //        create board
         indexToCellMap = new HashMap<>();
         indexToCellMap.put(0, new StartCell());
-        indexToCellMap.put(1, new RegularCell(1));
-        indexToCellMap.put(2, new RegularCell(2));
-        indexToCellMap.put(3, new RegularCell(3));
-        indexToCellMap.put(4, new RegularCell(4));
-        indexToCellMap.put(5, new GooseCell(5));
-        indexToCellMap.put(6, new BridgeCell());
-        indexToCellMap.put(7, new RegularCell(7));
-        indexToCellMap.put(8, new RegularCell(8));
-        indexToCellMap.put(9, new GooseCell(9));
-
-
-
-        indexToCellMap.put(14, new GooseCell(14));
-
-
-
-        indexToCellMap.put(18, new GooseCell(18));
-
-
-        indexToCellMap.put(23, new GooseCell(23));
-
-
-        indexToCellMap.put(27, new GooseCell(27));
-
-
         indexToCellMap.put(63, new EndCell());
 
+//        create regular cells
+        for(int i = 1; i < 63; i++) {
+            indexToCellMap.put(i, new RegularCell(i));
+        }
 
-
-
-
+//        then override
+        indexToCellMap.put(5, new GooseCell(5));
+        indexToCellMap.put(6, new BridgeCell());
+        indexToCellMap.put(14, new GooseCell(14));
+        indexToCellMap.put(18, new GooseCell(18));
+        indexToCellMap.put(23, new GooseCell(23));
+        indexToCellMap.put(27, new GooseCell(27));
     }
 
     public Cell getStartCell() {

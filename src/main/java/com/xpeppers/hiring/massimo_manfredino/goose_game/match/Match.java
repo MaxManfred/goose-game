@@ -82,6 +82,17 @@ public class Match extends MessageProviderClient {
      * the user writes: "move Pippo 2, 3"
      * the system responds: "Pippo rolls 2, 3. Pippo moves from 6 to 11"
      *
+     * As a player, I win the game if I land on space "63"
+     * 1. Victory
+     * If there is one participant "Pippo" on space "60"
+     * the user writes: "move Pippo 1, 2"
+     * the system responds: "Pippo rolls 1, 2. Pippo moves from 60 to 63. Pippo Wins!!"
+     *
+     * 2. Winning with the exact dice shooting
+     * If there is one participant "Pippo" on space "60"
+     * the user writes: "move Pippo 3, 2"
+     * the system responds: "Pippo rolls 3, 2. Pippo moves from 60 to 63. Pippo bounces! Pippo returns to 61"
+     *
      * @param name  name of the player to move (player will be moved of dice1 + dice2 cells)
      * @param dice1 the dice1 score
      * @param dice2 the dice2 score
@@ -107,7 +118,33 @@ public class Match extends MessageProviderClient {
 
         int oldCellIndex = p.getCell().getIndex();
         int newCellIndex = oldCellIndex + dice1 + dice2;
-        board.getCell(newCellIndex).addStandingPlayer(p);
+
+        if (newCellIndex > 63) {
+            board.getCell(63).addStandingPlayer(p);
+
+//            bounce back
+            newCellIndex = 126 - newCellIndex;
+
+            System.out.println(String.format("%s bounces! %s returns to %d.", name, name, newCellIndex));
+
+            board.getCell(newCellIndex).addStandingPlayer(p);
+        } else {
+            board.getCell(newCellIndex).addStandingPlayer(p);
+
+            if (newCellIndex == 63) {
+//                victory
+                System.out.println(String.format("%s wins!!", name));
+
+//                say goodbye to user
+                System.out.println("\n");
+                System.out.println(messageProvider.getMessage("main.goodbye"));
+
+//                quit
+                System.exit(0);
+            }
+        }
+
+
 
         return true;
     }
