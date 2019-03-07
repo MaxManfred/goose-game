@@ -6,7 +6,6 @@ import com.xpeppers.hiring.massimo_manfredino.goose_game.message.MessageProvider
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class RegularCell extends MessageProviderClient implements Cell {
 
@@ -21,9 +20,9 @@ public class RegularCell extends MessageProviderClient implements Cell {
         setIndex(index);
         standingPlayers = new LinkedList<>();
 
-//        if -Djava.enable.prank=true, no two players can share the same cell, hence the player occupying the cell
+//        if -Dgg.enable.prank=true, no two players can share the same cell, hence the player occupying the cell
 //        is sent to the cell where the new incoming player was before (prank).
-        prankEnabled = Boolean.parseBoolean(System.getProperty("enable.prank", "false"));
+        prankEnabled = Boolean.parseBoolean(System.getProperty("gg.enable.prank", "false"));
     }
 
     @Override
@@ -52,31 +51,32 @@ public class RegularCell extends MessageProviderClient implements Cell {
     @Override
     public void addStandingPlayer(Player player) {
 //        check if player came from an other cell
-        if(player.getCell() != null) {
+        Cell previousPlayerCell = player.getCell();
+
+        if(previousPlayerCell != null) {
+//            remove player from his previous cell (he is in transit now)
+            previousPlayerCell.getStandingPlayers().remove(0);
+            player.setCell(null);
+
 //            display message
             System.out.println(String.format(
                 "%s moves from %s to %s.",
-                player.getName(), getDisplayableIndex(player.getCell().getIndex()), getDisplayableIndex(getIndex())
+                player.getName(), getDisplayableIndex(previousPlayerCell.getIndex()), getDisplayableIndex(getIndex())
             ));
         }
 
+//        if prank is enabled, remove the player occupying this cell and send her back to the cell incoming user was before
+        if (prankEnabled && !standingPlayers.isEmpty() && previousPlayerCell != null) {
+//            he is in trantit now
+            Player removedPlayer = standingPlayers.remove(0);
+            removedPlayer.setCell(null);
 
-
-
-//        the system responds: "Pippo rolls 1, 1. Pippo moves from 15 to 17. On 17 there is Pluto, who returns to 15"
-
-
-        if (prankEnabled && !standingPlayers.isEmpty() && player.getCell() != null) {
-            Cell oldPlayerCell = player.getCell();
-//            move the current player on cell to the old cell of incoming player
-            Player currentPlayer = standingPlayers.remove(0);
-            currentPlayer.setCell(oldPlayerCell);
-            oldPlayerCell.addStandingPlayer(currentPlayer);
+            previousPlayerCell.addStandingPlayer(removedPlayer);
 
 //            display message
             System.out.println(String.format(
                 "On %s there is %s, who returns to %s.",
-                getDisplayableIndex(getIndex()), currentPlayer.getName(), getDisplayableIndex(oldPlayerCell.getIndex())
+                getDisplayableIndex(getIndex()), removedPlayer.getName(), getDisplayableIndex(previousPlayerCell.getIndex())
             ));
         }
 

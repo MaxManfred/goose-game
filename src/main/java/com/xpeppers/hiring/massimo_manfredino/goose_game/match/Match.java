@@ -144,8 +144,6 @@ public class Match extends MessageProviderClient {
             }
         }
 
-
-
         return true;
     }
 }
