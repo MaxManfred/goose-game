@@ -67,4 +67,16 @@ public class Board extends MessageProviderClient {
     public Cell getStartCell() {
         return indexToCellMap.get(0);
     }
+
+    public Cell getEndCell() {
+        return indexToCellMap.get(63);
+    }
+
+    public Cell getBridgeCell() {
+        return indexToCellMap.get(6);
+    }
+
+    public Cell getCell(int index) {
+        return indexToCellMap.get(index);
+    }
 }

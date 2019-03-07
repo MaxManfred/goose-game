@@ -45,7 +45,7 @@ public class Main {
 //            process current command
             try {
                 commandParser.parseCommand(currentCommand);
-            } catch (CommandParserException | GameStatusException e) {
+            } catch (CommandParserException | MatchException e) {
 //                display an error message and continue
                 System.out.println(e.getMessage());
             }

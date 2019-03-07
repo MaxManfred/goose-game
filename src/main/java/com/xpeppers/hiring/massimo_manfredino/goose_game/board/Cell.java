@@ -46,8 +46,6 @@ public interface Cell {
      * game can be more entertaining.
      *
      * @param player    a new player to add to the list of players on this cell
-     * @param withPrank if <code>true</code>, no two players can share the same cell, hence the player occupying the cell
-     *                  is sent to the cell where the new incoming player was before (prank).
      */
-    void addStandingPlayer(Player player, boolean withPrank);
+    void addStandingPlayer(Player player);
 }
