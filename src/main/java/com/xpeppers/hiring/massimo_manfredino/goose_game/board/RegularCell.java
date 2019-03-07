@@ -47,7 +47,7 @@ public class RegularCell extends MessageProviderClient implements Cell {
 //        display message
         System.out.println(String.format(
             "%s moves from %s to %s.",
-            player.getName(), player.getCell().getIndex(), getIndex()
+            player.getName(), prepareIndexForDisplayMessage(player.getCell().getIndex()), prepareIndexForDisplayMessage(getIndex())
         ));
 
 
@@ -66,12 +66,27 @@ public class RegularCell extends MessageProviderClient implements Cell {
 //            display message
             System.out.println(String.format(
                 "On %s there is %s, who returns to %s.",
-                getIndex(), currentPlayer.getName(), oldPlayerCell.getIndex()
+                prepareIndexForDisplayMessage(getIndex()), currentPlayer.getName(), prepareIndexForDisplayMessage(oldPlayerCell.getIndex())
             ));
         }
 
 //        put the incoming player to this cell
         standingPlayers.add(player);
         player.setCell(this);
+    }
+
+    private String prepareIndexForDisplayMessage(int index) {
+        String result;
+
+        switch(index) {
+            case 0:
+                result = "Start";
+            case 63:
+                result = "End";
+            default:
+                result = String.valueOf(index);
+        }
+
+        return result;
     }
 }
